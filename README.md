@@ -1,2 +1,2 @@
 # ivaowhazzup-to-json
-Python script for converting IVAO Whazzup traffic data into JSON format
+~~Python~~ PHP script for converting IVAO Whazzup traffic data into JSON format
