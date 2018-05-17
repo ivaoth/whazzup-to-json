@@ -15,6 +15,7 @@
     $c_dat=explode(':', $dat);
     //echo $c_dat[3].'<br>';
     if(($c_dat[3]=='PILOT' || $c_dat[3]=='FOLME') && $c_dat[20] != '' && (substr($c_dat[11], 0, strlen('VT'))==='VT' || substr($c_dat[13], 0, strlen('VT'))==='VT')) {
+      $aircraft_type=explode('/', $c_dat[9]);
       $res_p[$i_p]=array(
         'callsign' => $c_dat[0],
         'vid' => $c_dat[1],
@@ -32,7 +33,7 @@
         'squawk' => $c_dat[17],
         'rating' => $c_dat[41],
         'fullAircraft' => $c_dat[9],
-        'aircraft' => $c_dat[9].split('/')[1],
+        'aircraft' => $aircraft_type[1],
         'cruisingSpeed' => $c_dat[10],
         'departure' => $c_dat[11],
         'cruislingLevel' => $c_dat[12],
@@ -49,6 +50,7 @@
         'pob' => intval($c_dat[44])
       );
       $i_p++;
+      $aircraft_type=null;
     }
     else if($c_dat[3]=='ATC' && $c_dat[18]==1 && (substr($c_dat[11], 0, strlen('VT'))==='VT' || substr($c_dat[13], 0, strlen('VT'))==='VT')) {
       $res_a[$i_a]=array(
