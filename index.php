@@ -72,7 +72,7 @@
       );
       $i_p++;
     }
-    else if($c_dat[3]=='ATC' && $c_dat[18]==0) {
+    else if($c_dat[3]=='ATC' && $c_dat[4]==null) {
       $res_a[$i_a]=array(
         'callsign' => $c_dat[0],
         'vid' => $c_dat[1],
@@ -84,7 +84,7 @@
       );
       $i_a++;
     }
-    else if($c_dat[3]=='ATC' && $c_dat[18]==1) {
+    else if($c_dat[3]=='ATC' && $c_dat[4]!=null) {
       $res_a[$i_a]=array(
         'callsign' => $c_dat[0],
         'vid' => $c_dat[1],

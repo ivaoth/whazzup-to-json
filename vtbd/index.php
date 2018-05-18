@@ -52,7 +52,7 @@
       $i_p++;
       $aircraft_type=null;
     }
-    else if($c_dat[3]=='ATC' && $c_dat[18]==1 && (substr($c_dat[11], 0, strlen('VTBD'))==='VTBD' || substr($c_dat[13], 0, strlen('VTBD'))==='VTBD')) {
+    else if($c_dat[3]=='ATC' && $c_dat[4]!=null && (substr($c_dat[11], 0, strlen('VTBD'))==='VTBD' || substr($c_dat[13], 0, strlen('VTBD'))==='VTBD')) {
       $res_a[$i_a]=array(
         'callsign' => $c_dat[0],
         'vid' => $c_dat[1],
