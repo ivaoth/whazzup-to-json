@@ -8,6 +8,7 @@
   |
   */
   $config_filter=strtoupper($_REQUEST['airport']);
+
   $data=file_get_contents('http://api.ivao.aero/getdata/whazzup/whazzup.txt');
   $c_data=explode('!CLIENTS'.PHP_EOL, $data);
   $c_data=explode('!AIRPORTS', $c_data[1]);
@@ -23,9 +24,7 @@
     }
     $c_dat=explode(':', $dat);
     //echo $c_dat[3].'<br>';
-    if(($c_dat[3]=='PILOT' || $c_dat[3]=='FOLME') && $c_dat[20] != '' && (substr($c_dat[11], 0, 
-strlen($config_filter))===$config_filter || substr($c_dat[13], 0, 
-strlen($config_filter))===$config_filter)) {
+    if(($c_dat[3]=='PILOT' || $c_dat[3]=='FOLME') && $c_dat[20] != '' && (substr($c_dat[11], 0, strlen($config_filter))===$config_filter || substr($c_dat[13], 0, strlen($config_filter))===$config_filter)) {
       $aircraft_type=explode('/', $c_dat[9]);
       $res_p[$i_p]=array(
         'callsign' => $c_dat[0],
@@ -63,9 +62,7 @@ strlen($config_filter))===$config_filter)) {
       $i_p++;
       $aircraft_type=null;
     }
-    else if($c_dat[3]=='ATC' && $c_dat[18]==1 && (substr($c_dat[11], 0, 
-strlen($config_filter))===$config_filter || substr($c_dat[13], 0, 
-strlen($config_filter))===$config_filter)) {
+    else if($c_dat[3]=='ATC' && $c_dat[4]!=null && substr($c_dat[0], 0, strlen($config_filter))===$config_filter) {
       $res_a[$i_a]=array(
         'callsign' => $c_dat[0],
         'vid' => $c_dat[1],
