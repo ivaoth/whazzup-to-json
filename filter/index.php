@@ -7,7 +7,7 @@
   | from arrival and destination airports and atc will filter from callsign
   |
   */
-  $config_filter=$_REQUEST['airport'];
+  $config_filter=strtoupper($_REQUEST['airport']);
   $data=file_get_contents('http://api.ivao.aero/getdata/whazzup/whazzup.txt');
   $c_data=explode('!CLIENTS'.PHP_EOL, $data);
   $c_data=explode('!AIRPORTS', $c_data[1]);
