@@ -1,7 +1,8 @@
 <?php
   /*
   |--------------------------------------------------------------------------
-  | Filter Config --------------------------------------------------------------------------
+  | Filter Config 
+  |--------------------------------------------------------------------------
   |
   | This will use for filtering pilots and atc before sending an output. For pilot it will filter 
   | from arrival and destination airports and atc will filter from callsign
