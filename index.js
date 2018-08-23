@@ -5,79 +5,93 @@ const rp = require('request-promise')
 const app = express()
 
 const config = {
-  "general": {
-    "baseurl": "http://localhost:3000"
+  general: {
+    baseurl: "http://localhost:3000"
   },
-  "web": {
-    "port": 3000
+  web: {
+    port: 3000
   }
 }
 
-app.get('/', function(req, res) {
-  res.json({"response": "OK"})
+app.get('/', function (req, res) {
+  res.json({
+    "response": "OK"
+  })
 })
 
-app.get('/status', function(req, res) {
-  var output=[];
-  rp({ method: 'GET', uri: 'https://www.ivao.aero/whazzup/status.txt' })
-    .then(function(data) {
+app.get('/status', function (req, res) {
+  var output = [];
+  rp({
+      method: 'GET',
+      uri: 'https://www.ivao.aero/whazzup/status.txt'
+    })
+    .then(function (data) {
       data
         .split('\n') // Seperate by detecting new line character
-        .filter(function(l) {
+        .filter(function (l) {
           return !l.startsWith(';') && !l.startsWith(';') && l !== '' // Any line starting with ; or # should be regarded as comments and ignored by the client parser
         })
-        .forEach(function(l) {
+        .forEach(function (l) {
           // console.log(l)
           var extract = l
             .split('=')
-          if(extract[1]) {
+          if (extract[1]) {
             output.push({
               "name": extract[0],
-              "value": extract[1].replace(/(\r\n|\n|\r)/gm,"") // Trim the end
+              "value": extract[1].replace(/(\r\n|\n|\r)/gm, "") // Trim the end
             })
           }
         })
-      return ;
+      return;
     })
-    .then(function() {
+    .then(function () {
       res.json(output)
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err)
     })
 })
 
-app.get('/whazzup', function(req, res) {
-  var general=[], clients=[], airports=[], servers=[];
-  var tmp=[];
-  rp({ method: 'GET', uri: config.general.baseurl+'/status', json: true })
-    .then(function(data) {
-      data.forEach(function(d) {
-        if(d.name==='url0')
+app.get('/whazzup', function (req, res) {
+  var general = [],
+    clients = [],
+    airports = [],
+    servers = [];
+  var tmp = [];
+  rp({
+      method: 'GET',
+      uri: config.general.baseurl + '/status',
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
+        if (d.name === 'url0')
           tmp.push(d.value)
       })
     })
-    .then(function() {
-      return rp({ method: 'GET', uri: tmp[0] })
-        .then(function(data){
+    .then(function () {
+      return rp({
+          method: 'GET',
+          uri: tmp[0]
+        })
+        .then(function (data) {
           lines = data.split('\n')
-          var type = ''
+          var mode = ''
           lines
-            .forEach(function(line) {
-              line = line.replace(/(\r\n|\n|\r)/gm,"")
+            .forEach(function (line) {
+              line = line.replace(/(\r\n|\n|\r)/gm, "")
               if (line.startsWith('!')) {
                 mode = line.slice(1)
-              }
-              else {
-                switch(mode) {
+              } else {
+                switch (mode) {
                   case 'GENERAL': // !GENERAL
                     var extract = line
                       .split(' = ')
-                      general.push({
-                        "name": extract[0],
-                        "value": extract[1]
-                      })
-                      break
+                    general.push({
+                      "name": extract[0],
+                      "value": extract[1]
+                    })
+                    break
                   case 'CLIENTS': // !CLIENTS
                     var fields = line.split(':')
                     var client = {}
@@ -132,12 +146,10 @@ app.get('/whazzup', function(req, res) {
                     break
                   case 'AIRPORTS': // !AIRPORTS
                     var fields = line.split(':')
-                    if(fields) {
-                      var airport = {}
-                      airport.icao = fields[0]
-                      airport.atis = fields[1]
-                      airports.push(airport)
-                    }
+                    var airport = {}
+                    airport.icao = fields[0]
+                    airport.atis = fields[1]
+                    airports.push(airport)
                     break
                   case 'SERVERS': // !SERVERS
                     var fields = line.split(':')
@@ -155,10 +167,7 @@ app.get('/whazzup', function(req, res) {
             })
         })
     })
-    .then(function(p) {
-      Promise.all(p)
-    })
-    .then(function() {
+    .then(function () {
       res.json({
         "general": general,
         "clients": clients,
@@ -166,25 +175,141 @@ app.get('/whazzup', function(req, res) {
         "servers": servers
       })
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err)
     })
 })
 
-app.get('/voice', function(req, res) {
-  res.json({"response": "OK"})
+app.get('/voice', function (req, res) {
+  var general = [],
+    vclients = [],
+    vservers = [];
+  var tmp = [];
+  rp({
+      method: 'GET',
+      uri: config.general.baseurl + '/status',
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
+        if (d.name === 'url1')
+          tmp.push(d.value)
+      })
+    })
+    .then(function () {
+      return rp({
+          method: 'GET',
+          uri: tmp[0]
+        })
+        .then(function (data) {
+          lines = data.split('\n')
+          var mode = ''
+          lines
+            .forEach(function (line) {
+              line = line.replace(/(\r\n|\n|\r)/gm, "")
+              if (line.startsWith('!')) {
+                mode = line.slice(1)
+              } else {
+                switch (mode) {
+                  case 'GENERAL': // !GENERAL
+                    var extract = line
+                      .split(' = ')
+                    general.push({
+                      "name": extract[0],
+                      "value": extract[1]
+                    })
+                    break
+                  case 'VOICE CLIENTS': // !CLIENTS
+                    var fields = line.split(':')
+                    break
+                  case 'VOICE SERVERS': // !AIRPORTS
+                    var fields = line.split(':')
+                    var vserver = {}
+                    vserver.ident = fields[2]
+                    vserver.ip = fields[0]
+                    vserver.location = fields[1]
+                    vserver.description = fields[5]
+                    vserver.isallowed = fields[4]
+                    vserver.maxconnection = fields[5]
+                    vservers.push(vserver)
+                    break
+                }
+              }
+            })
+        })
+    })
+    .then(function () {
+      res.json({
+        "general": general,
+        "voice": {
+          "client": vclients,
+          "server": vservers
+        }
+      })
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
 })
 
-app.get('/matar', function(req, res) {
-  res.json({"response": "OK"})
+app.get('/metar', function (req, res) {
+  var output = [];
+  var tmp = [];
+  rp({
+      method: 'GET',
+      uri: config.general.baseurl + '/status',
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
+        if (d.name === 'metar0')
+          tmp.push(d.value)
+      })
+    })
+    .then(function () {
+      return rp({
+          method: 'GET',
+          uri: tmp[0]
+        })
+        .then(function (data) {
+          lines = data.split('\n')
+          lines
+            .forEach(function (line) {
+              var metar = {}
+              line = line
+                .replace(/(\r\n|\n|\r)/gm, "")
+                .split(' ')
+              metar.icao = line[0]
+              metar.time = line[1]
+              metar.detail = ''
+              for(var i=2 ; i<line.length ; i++) {
+                metar.detail += line[i]
+                if(line.length-1 !== i) {
+                  metar.detail += ' '
+                }
+              }
+              output.push(metar)
+            })
+        })
+    })
+    .then(function () {
+      res.json(output)
+    })
+    .catch(function (err) {
+      console.log(err)
+    })
 })
 
-app.get('/taf', function(req, res) {
-  res.json({"response": "OK"})
+app.get('/taf', function (req, res) {
+  res.json({
+    "response": "OK"
+  })
 })
 
-app.get('/shorttaf', function(req, res) {
-  res.json({"response": "OK"})
+app.get('/shorttaf', function (req, res) {
+  res.json({
+    "response": "OK"
+  })
 })
 
 app.listen(config.web.port)
