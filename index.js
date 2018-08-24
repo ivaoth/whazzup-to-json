@@ -6,7 +6,8 @@ const app = express();
 
 const config = {
   general: {
-    baseurl: "http://localhost:3000"
+    baseurl: "http://localhost:3000",
+    whazzupurl: "https://www.ivao.aero/whazzup/status.txt"
   },
   web: {
     port: 3000
@@ -23,7 +24,7 @@ app.get("/status", function(req, res) {
   var output = [];
   rp({
     method: "GET",
-    uri: "https://www.ivao.aero/whazzup/status.txt"
+    uri: config.general.whazzupurl
   })
     .then(function(data) {
       data
