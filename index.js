@@ -6,7 +6,7 @@ const app = express();
 
 const config = {
   general: {
-    baseurl: "http://localhost:3000",
+    baseurl: "http://localhost",
     whazzupurl: "https://www.ivao.aero/whazzup/status.txt"
   },
   web: {
@@ -60,7 +60,7 @@ app.get("/whazzup", function(req, res) {
   var tmp = [];
   rp({
     method: "GET",
-    uri: config.general.baseurl + "/status",
+    uri: config.general.baseurl + ":" + config.web.port + "/status",
     json: true
   })
     .then(function(data) {
@@ -186,7 +186,7 @@ app.get("/voice", function(req, res) {
   var tmp = [];
   rp({
     method: "GET",
-    uri: config.general.baseurl + "/status",
+    uri: config.general.baseurl + ":" + config.web.port + "/status",
     json: true
   })
     .then(function(data) {
@@ -252,7 +252,7 @@ app.get("/metar", function(req, res) {
   var tmp = [];
   rp({
     method: "GET",
-    uri: config.general.baseurl + "/status",
+    uri: config.general.baseurl + ":" + config.web.port + "/status",
     json: true
   })
     .then(function(data) {
@@ -295,7 +295,7 @@ app.get("/taf", function(req, res) {
   var tmp = [];
   rp({
     method: "GET",
-    uri: config.general.baseurl + "/status",
+    uri: config.general.baseurl + ":" + config.web.port + "/status",
     json: true
   })
     .then(function(data) {
@@ -338,7 +338,7 @@ app.get("/shorttaf", function(req, res) {
   var tmp = [];
   rp({
     method: "GET",
-    uri: config.general.baseurl + "/status",
+    uri: config.general.baseurl + ":" + config.web.port + "/status",
     json: true
   })
     .then(function(data) {
