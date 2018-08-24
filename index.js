@@ -376,4 +376,11 @@ app.get("/shorttaf", function(req, res) {
     });
 });
 
+app.get('*', function(req, res){
+  res.json({
+    "respose": "error",
+    "remark": "not found"
+  }, 404);
+});
+
 app.listen(config.web.port);
