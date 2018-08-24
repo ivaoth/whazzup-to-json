@@ -309,7 +309,7 @@ app.get("/taf", function(req, res) {
         uri: tmp[0]
       }).then(function(data) {
         lines = data.split("\n");
-        lines.forEach(function(line) {
+        lines.slice(1).forEach(function(line) {
           var taf = {};
           line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
           taf.icao = line[0];
