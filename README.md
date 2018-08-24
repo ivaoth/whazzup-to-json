@@ -56,10 +56,10 @@ Installation
 Routes
 ------
 
-| Method | URI           | Description                |
-|--------|---------------|----------------------------|
-| GET    | /status       | Show whazzup status file   |
-| GET    | /whazzup      | Show IVAO traffic and ATCs |
-| GET    | /metar        | Show METAR information     |
-| GET    | /taf          | Show TAF information       |
-| GET    | /shorttaf     | Show short TAF information |
+| Method | URI                                                          | Description                |
+|--------|--------------------------------------------------------------|----------------------------|
+| GET    | [/status](https://ivaothai-whazzup.herokuapp.com/status)     | Show whazzup status file   |
+| GET    | [/whazzup](https://ivaothai-whazzup.herokuapp.com/whazzup)   | Show IVAO traffic and ATCs |
+| GET    | [/metar](https://ivaothai-whazzup.herokuapp.com/metar)       | Show METAR information     |
+| GET    | [/taf](https://ivaothai-whazzup.herokuapp.com/taf)           | Show TAF information       |
+| GET    | [/shorttaf](https://ivaothai-whazzup.herokuapp.com/shorttaf) | Show short TAF information |
