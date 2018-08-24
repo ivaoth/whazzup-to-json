@@ -14,25 +14,25 @@ const config = {
   }
 };
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   res.json({
     response: "OK"
   });
 });
 
-app.get("/status", function(req, res) {
+app.get("/status", function (req, res) {
   var output = [];
   rp({
-    method: "GET",
-    uri: config.general.whazzupurl
-  })
-    .then(function(data) {
+      method: "GET",
+      uri: config.general.whazzupurl
+    })
+    .then(function (data) {
       data
         .split("\n") // Seperate by detecting new line character
-        .filter(function(l) {
+        .filter(function (l) {
           return !l.startsWith(";") && !l.startsWith(";") && l !== ""; // Any line starting with ; or # should be regarded as comments and ignored by the client parser
         })
-        .forEach(function(l) {
+        .forEach(function (l) {
           // console.log(l)
           var extract = l.split("=");
           if (extract[1]) {
@@ -44,38 +44,38 @@ app.get("/status", function(req, res) {
         });
       return;
     })
-    .then(function() {
+    .then(function () {
       res.json(output);
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
     });
 });
 
-app.get("/whazzup", function(req, res) {
+app.get("/whazzup", function (req, res) {
   var general = [],
     clients = [],
     airports = [],
     servers = [];
   var tmp = [];
   rp({
-    method: "GET",
-    uri: config.general.baseurl + "/status",
-    json: true
-  })
-    .then(function(data) {
-      data.forEach(function(d) {
+      method: "GET",
+      uri: config.general.baseurl + "/status",
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
         if (d.name === "url0") tmp.push(d.value);
       });
     })
-    .then(function() {
+    .then(function () {
       return rp({
         method: "GET",
         uri: tmp[0]
-      }).then(function(data) {
+      }).then(function (data) {
         lines = data.split("\n");
         var mode = "";
-        lines.forEach(function(line) {
+        lines.forEach(function (line) {
           line = line.replace(/(\r\n|\n|\r)/gm, "");
           if (line.startsWith("!")) {
             mode = line.slice(1);
@@ -166,7 +166,7 @@ app.get("/whazzup", function(req, res) {
         });
       });
     })
-    .then(function() {
+    .then(function () {
       res.json({
         general: general,
         clients: clients,
@@ -174,34 +174,34 @@ app.get("/whazzup", function(req, res) {
         servers: servers
       });
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
     });
 });
 
-app.get("/voice", function(req, res) {
+app.get("/voice", function (req, res) {
   var general = [],
     vclients = [],
     vservers = [];
   var tmp = [];
   rp({
-    method: "GET",
-    uri: config.general.baseurl + "/status",
-    json: true
-  })
-    .then(function(data) {
-      data.forEach(function(d) {
+      method: "GET",
+      uri: config.general.baseurl + "/status",
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
         if (d.name === "url1") tmp.push(d.value);
       });
     })
-    .then(function() {
+    .then(function () {
       return rp({
         method: "GET",
         uri: tmp[0]
-      }).then(function(data) {
+      }).then(function (data) {
         lines = data.split("\n");
         var mode = "";
-        lines.forEach(function(line) {
+        lines.forEach(function (line) {
           line = line.replace(/(\r\n|\n|\r)/gm, "");
           if (line.startsWith("!")) {
             mode = line.slice(1);
@@ -233,7 +233,7 @@ app.get("/voice", function(req, res) {
         });
       });
     })
-    .then(function() {
+    .then(function () {
       res.json({
         general: general,
         voice: {
@@ -242,31 +242,31 @@ app.get("/voice", function(req, res) {
         }
       });
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
     });
 });
 
-app.get("/metar", function(req, res) {
+app.get("/metar", function (req, res) {
   var output = [];
   var tmp = [];
   rp({
-    method: "GET",
-    uri: config.general.baseurl + "/status",
-    json: true
-  })
-    .then(function(data) {
-      data.forEach(function(d) {
+      method: "GET",
+      uri: config.general.baseurl + "/status",
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
         if (d.name === "metar0") tmp.push(d.value);
       });
     })
-    .then(function() {
+    .then(function () {
       return rp({
         method: "GET",
         uri: tmp[0]
-      }).then(function(data) {
+      }).then(function (data) {
         lines = data.split("\n");
-        lines.forEach(function(line) {
+        lines.forEach(function (line) {
           var metar = {};
           line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
           metar.icao = line[0];
@@ -282,34 +282,34 @@ app.get("/metar", function(req, res) {
         });
       });
     })
-    .then(function() {
+    .then(function () {
       res.json(output);
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
     });
 });
 
-app.get("/taf", function(req, res) {
+app.get("/taf", function (req, res) {
   var output = [];
   var tmp = [];
   rp({
-    method: "GET",
-    uri: config.general.baseurl + "/status",
-    json: true
-  })
-    .then(function(data) {
-      data.forEach(function(d) {
+      method: "GET",
+      uri: config.general.baseurl + "/status",
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
         if (d.name === "taf0") tmp.push(d.value);
       });
     })
-    .then(function() {
+    .then(function () {
       return rp({
         method: "GET",
         uri: tmp[0]
-      }).then(function(data) {
+      }).then(function (data) {
         lines = data.split("\n");
-        lines.slice(1).forEach(function(line) {
+        lines.slice(1).forEach(function (line) {
           var taf = {};
           line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
           taf.icao = line[0];
@@ -325,34 +325,34 @@ app.get("/taf", function(req, res) {
         });
       });
     })
-    .then(function() {
+    .then(function () {
       res.json(output);
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
     });
 });
 
-app.get("/shorttaf", function(req, res) {
+app.get("/shorttaf", function (req, res) {
   var output = [];
   var tmp = [];
   rp({
-    method: "GET",
-    uri: config.general.baseurl + "/status",
-    json: true
-  })
-    .then(function(data) {
-      data.forEach(function(d) {
+      method: "GET",
+      uri: config.general.baseurl + "/status",
+      json: true
+    })
+    .then(function (data) {
+      data.forEach(function (d) {
         if (d.name === "shorttaf0") tmp.push(d.value);
       });
     })
-    .then(function() {
+    .then(function () {
       return rp({
         method: "GET",
         uri: tmp[0]
-      }).then(function(data) {
+      }).then(function (data) {
         lines = data.split("\n");
-        lines.forEach(function(line) {
+        lines.forEach(function (line) {
           var shorttaf = {};
           line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
           shorttaf.icao = line[0];
@@ -368,18 +368,18 @@ app.get("/shorttaf", function(req, res) {
         });
       });
     })
-    .then(function() {
+    .then(function () {
       res.json(output);
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
     });
 });
 
-app.get('*', function(req, res){
+app.get('*', function (req, res) {
   res.json({
-    "respose": "error",
-    "remark": "not found"
+    respose: "error",
+    remark: "not found"
   }, 404);
 });
 
