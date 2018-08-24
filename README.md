@@ -58,8 +58,8 @@ Routes
 
 | Method | URI                                                          | Description                |
 |--------|--------------------------------------------------------------|----------------------------|
-| GET    | [/status](https://ivaothai-whazzup.herokuapp.com/status)     | Show whazzup status file   |
-| GET    | [/whazzup](https://ivaothai-whazzup.herokuapp.com/whazzup)   | Show IVAO traffic and ATCs |
-| GET    | [/metar](https://ivaothai-whazzup.herokuapp.com/metar)       | Show METAR information     |
-| GET    | [/taf](https://ivaothai-whazzup.herokuapp.com/taf)           | Show TAF information       |
-| GET    | [/shorttaf](https://ivaothai-whazzup.herokuapp.com/shorttaf) | Show short TAF information |
+| GET    | [/status](https://whazzup.rayriffy.com/status)     | Show whazzup status file   |
+| GET    | [/whazzup](https://whazzup.rayriffy.com/whazzup)   | Show IVAO traffic and ATCs |
+| GET    | [/metar](https://whazzup.rayriffy.com/metar)       | Show METAR information     |
+| GET    | [/taf](https://whazzup.rayriffy.com/taf)           | Show TAF information       |
+| GET    | [/shorttaf](https://whazzup.rayriffy.com/shorttaf) | Show short TAF information |
