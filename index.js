@@ -10,7 +10,7 @@ const config = {
     whazzupurl: "https://www.ivao.aero/whazzup/status.txt"
   },
   web: {
-    port: 3000
+    port: process.env.PORT || 3000
   }
 };
 
