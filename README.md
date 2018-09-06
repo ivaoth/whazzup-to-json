@@ -20,7 +20,7 @@ Configuration
 Installation
 ------------
 
-01. Clone repository
+01. Clone it!
 
     ```markdown
     $ git clone https://github.com/rayriffy/ivaowhazzup-to-json
@@ -31,7 +31,7 @@ Installation
     Unpacking objects: 100% (71/71), done.
     ```
 
-02. Install Packages
+02. Install it!
 
     ```markdown
     $ yarn
