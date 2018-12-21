@@ -167,6 +167,7 @@ app.get("/whazzup", function (req, res) {
       });
     })
     .then(function () {
+      servers.pop();
       res.json({
         general: general,
         clients: clients,
