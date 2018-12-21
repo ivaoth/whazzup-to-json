@@ -3,11 +3,14 @@
 const express = require("express");
 const rp = require("request-promise");
 const app = express();
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const config = {
   general: {
-    baseurl: "http://localhost:3000",
-    whazzupurl: "https://www.ivao.aero/whazzup/status.txt"
+    baseurl: process.env.BASE_URL,
+    whazzupurl: process.env.WHAZZUP_URL
   },
   web: {
     port: process.env.PORT || 3000
