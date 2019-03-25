@@ -203,7 +203,7 @@ app.get("/whazzup", async function (req, res) {
   }
 });
 
-app.get("/voice", function (req, res) {
+app.get("/voice", async function (req, res) {
   var general = [],
     vclients = [],
     vservers = [];
@@ -279,7 +279,7 @@ app.get("/voice", function (req, res) {
   }
 });
 
-app.get("/metar", function (req, res) {
+app.get("/metar", async function (req, res) {
   var output = [];
   var tmp = [];
 
@@ -328,7 +328,7 @@ app.get("/metar", function (req, res) {
   }
 });
 
-app.get("/taf", function (req, res) {
+app.get("/taf", async function (req, res) {
   var output = [];
   var tmp = [];
 
@@ -379,7 +379,7 @@ app.get("/taf", function (req, res) {
   }
 });
 
-app.get("/shorttaf", function (req, res) {
+app.get("/shorttaf", async function (req, res) {
   var output = [];
   var tmp = [];
 
