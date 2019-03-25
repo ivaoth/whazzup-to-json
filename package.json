@@ -1,11 +1,13 @@
 {
   "name": "ivaowhazzup-to-json",
   "description": "Convert messy IVAO Whazzup file into JSON format",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "jshint": "^2.10.2"
+  },
   "scripts": {
-    "test": "jshint index.js",
+    "lint": "jshint index.js",
     "start": "node index.js"
   },
   "repository": {
@@ -17,7 +19,7 @@
     "Whazzup",
     "JSON"
   ],
-  "author": "Phumrapee Limpianchop",
+  "author": "Phumrapee Limpianchop <contact@rayriffy.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rayriffy/ivaowhazzup-to-json/issues"
