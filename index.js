@@ -282,87 +282,101 @@ app.get("/voice", function (req, res) {
 app.get("/metar", function (req, res) {
   var output = [];
   var tmp = [];
-  rp({
-      method: "GET",
-      uri: config.general.baseurl + "/status",
-      json: true
-    })
-    .then(function (data) {
-      data.forEach(function (d) {
-        if (d.name === "metar0") tmp.push(d.value);
-      });
-    })
-    .then(function () {
-      return rp({
-        method: "GET",
-        uri: tmp[0]
-      }).then(function (data) {
-        lines = data.split("\n");
-        lines.forEach(function (line) {
-          var metar = {};
-          line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
-          metar.icao = line[0];
-          metar.time = line[1];
-          metar.detail = "";
-          for (var i = 2; i < line.length; i++) {
-            metar.detail += line[i];
-            if (line.length - 1 !== i) {
-              metar.detail += " ";
-            }
-          }
-          output.push(metar);
-        });
-      });
-    })
-    .then(function () {
-      res.json(output);
-    })
-    .catch(function (err) {
-      console.log(err);
+
+  try {
+    const whazzup = await axios.get(`${config.general.baseurl}/status`);
+
+    whazzup.forEach(function (d) {
+      if (d.name === "metar0") tmp.push(d.value);
     });
+
+    const data = await axios.get(tmp[0]);
+    
+    var lines = data.split("\n");
+    lines.forEach(function (line) {
+      var metar = {};
+      line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
+      metar.icao = line[0];
+      metar.time = line[1];
+      metar.detail = "";
+      for (var i = 2; i < line.length; i++) {
+        metar.detail += line[i];
+        if (line.length - 1 !== i) {
+          metar.detail += " ";
+        }
+      }
+      output.push(metar);
+    });
+
+    res.status(200).send({
+      status: 'success',
+      code: 201,
+      response: {
+        message: 'data obtained',
+        data: output,
+      },
+    })
+  } catch (err) {
+    res.status(400).send({
+      status: 'failure',
+      code: 401,
+      response: {
+        message: 'unexpected error',
+        data: err.data,
+      },
+    })
+  }
 });
 
 app.get("/taf", function (req, res) {
   var output = [];
   var tmp = [];
-  rp({
-      method: "GET",
-      uri: config.general.baseurl + "/status",
-      json: true
-    })
-    .then(function (data) {
-      data.forEach(function (d) {
-        if (d.name === "taf0") tmp.push(d.value);
-      });
-    })
-    .then(function () {
-      return rp({
-        method: "GET",
-        uri: tmp[0]
-      }).then(function (data) {
-        lines = data.split("\n");
-        lines.slice(1).forEach(function (line) {
-          var taf = {};
-          line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
-          taf.icao = line[0];
-          taf.time = line[1];
-          taf.detail = "";
-          for (var i = 2; i < line.length; i++) {
-            taf.detail += line[i];
-            if (line.length - 1 !== i) {
-              taf.detail += " ";
-            }
-          }
-          output.push(taf);
-        });
-      });
-    })
-    .then(function () {
-      res.json(output);
-    })
-    .catch(function (err) {
-      console.log(err);
+
+  try {
+    const whazzup = await axios.get(`${config.general.baseurl}/status`);
+
+    whazzup.forEach(function (d) {
+      if (d.name === "taf0") tmp.push(d.value);
     });
+
+    const data = await axios.get(tmp[0]);
+
+    var lines = data.split("\n");
+    lines
+      .slice(1)
+      .forEach(function (line) {
+        var taf = {};
+        line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
+        taf.icao = line[0];
+        taf.time = line[1];
+        taf.detail = "";
+        for (var i = 2; i < line.length; i++) {
+          taf.detail += line[i];
+          if (line.length - 1 !== i) {
+            taf.detail += " ";
+          }
+        }
+        output.push(taf);
+      });
+
+    res.status(200).send({
+      status: 'success',
+      code: 201,
+      response: {
+        message: 'data obtained',
+        data: output,
+      },
+    })
+  } catch (err) {
+    res.status(400).send({
+      status: 'failure',
+      code: 401,
+      response: {
+        message: 'unexpected error',
+        data: err.data,
+      },
+    })
+  }
 });
 
 app.get("/shorttaf", function (req, res) {
