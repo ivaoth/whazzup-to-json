@@ -33,7 +33,7 @@ app.get("/status", async function (req, res) {
   try {
     const whazzup = await axios.get(config.general.whazzupurl);
 
-    whazzup
+    whazzup.data
       .split('\n')
       .filter(function (l) {
         return !l.startsWith(";") && !l.startsWith(";") && l !== ""; // Any line starting with ; or # should be regarded as comments and ignored by the client parser
@@ -63,7 +63,7 @@ app.get("/status", async function (req, res) {
       code: 701,
       response: {
         message: 'unexpected error',
-        data: err.data,
+        data: err,
       },
     })
   }
@@ -79,13 +79,13 @@ app.get("/whazzup", async function (req, res) {
   try {
     const whazzup = await axios.get(`${config.general.baseurl}/status`);
 
-    whazzup.forEach(function (d) {
+    whazzup.data.response.data.forEach(function (d) {
       if (d.name === "url0") tmp.push(d.value);
     });
 
-    const data = await axios.get(tmp[0]);
+    const raw = await axios.get(tmp[0]);
 
-    var lines = data.split("\n");
+    var lines = raw.data.split("\n");
     var mode = "";
     lines.forEach(function (line) {
       line = line.replace(/(\r\n|\n|\r)/gm, "");
@@ -212,13 +212,13 @@ app.get("/voice", async function (req, res) {
   try {
     const whazzup = await axios.get(`${config.general.baseurl}/status`);
 
-    whazzup.forEach(function (d) {
+    whazzup.data.response.data.forEach(function (d) {
       if (d.name === "url1") tmp.push(d.value);
     });
 
-    const data = await axios.get(tmp[0]);
+    const raw = await axios.get(tmp[0]);
 
-    var lines = data.split("\n");
+    var lines = raw.data.split("\n");
     var mode = "";
     lines.forEach(function (line) {
       line = line.replace(/(\r\n|\n|\r)/gm, "");
@@ -286,13 +286,13 @@ app.get("/metar", async function (req, res) {
   try {
     const whazzup = await axios.get(`${config.general.baseurl}/status`);
 
-    whazzup.forEach(function (d) {
+    whazzup.data.response.data.forEach(function (d) {
       if (d.name === "metar0") tmp.push(d.value);
     });
 
-    const data = await axios.get(tmp[0]);
-    
-    var lines = data.split("\n");
+    const raw = await axios.get(tmp[0]);
+
+    var lines = raw.data.split("\n");
     lines.forEach(function (line) {
       var metar = {};
       line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
@@ -335,13 +335,13 @@ app.get("/taf", async function (req, res) {
   try {
     const whazzup = await axios.get(`${config.general.baseurl}/status`);
 
-    whazzup.forEach(function (d) {
+    whazzup.data.response.data.forEach(function (d) {
       if (d.name === "taf0") tmp.push(d.value);
     });
 
-    const data = await axios.get(tmp[0]);
+    const raw = await axios.get(tmp[0]);
 
-    var lines = data.split("\n");
+    var lines = raw.data.split("\n");
     lines
       .slice(1)
       .forEach(function (line) {
@@ -386,13 +386,13 @@ app.get("/shorttaf", async function (req, res) {
   try {
     const whazzup = await axios.get(`${config.general.baseurl}/status`);
 
-    whazzup.forEach(function (d) {
+    whazzup.data.response.data.forEach(function (d) {
       if (d.name === "shorttaf0") tmp.push(d.value);
     });
 
-    const data = await axios.get(tmp[0]);
+    const raw = await axios.get(tmp[0]);
 
-    var lines = data.split("\n");
+    var lines = raw.data.split("\n");
     lines.forEach(function (line) {
       var shorttaf = {};
       line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
