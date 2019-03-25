@@ -85,7 +85,7 @@ app.get("/whazzup", async function (req, res) {
 
     const data = await axios.get(tmp[0]);
 
-    lines = data.split("\n");
+    var lines = data.split("\n");
     var mode = "";
     lines.forEach(function (line) {
       line = line.replace(/(\r\n|\n|\r)/gm, "");
@@ -208,67 +208,75 @@ app.get("/voice", function (req, res) {
     vclients = [],
     vservers = [];
   var tmp = [];
-  rp({
-      method: "GET",
-      uri: config.general.baseurl + "/status",
-      json: true
-    })
-    .then(function (data) {
-      data.forEach(function (d) {
-        if (d.name === "url1") tmp.push(d.value);
-      });
-    })
-    .then(function () {
-      return rp({
-        method: "GET",
-        uri: tmp[0]
-      }).then(function (data) {
-        lines = data.split("\n");
-        var mode = "";
-        lines.forEach(function (line) {
-          line = line.replace(/(\r\n|\n|\r)/gm, "");
-          if (line.startsWith("!")) {
-            mode = line.slice(1);
-          } else {
-            switch (mode) {
-              case "GENERAL": // !GENERAL
-                var extract = line.split(" = ");
-                general.push({
-                  name: extract[0],
-                  value: extract[1]
-                });
-                break;
-              case "VOICE CLIENTS": // !CLIENTS
-                var fields = line.split(":");
-                break;
-              case "VOICE SERVERS": // !AIRPORTS
-                var fields = line.split(":");
-                var vserver = {};
-                vserver.ident = fields[2];
-                vserver.ip = fields[0];
-                vserver.location = fields[1];
-                vserver.description = fields[5];
-                vserver.isallowed = fields[4];
-                vserver.maxconnection = fields[5];
-                vservers.push(vserver);
-                break;
-            }
-          }
-        });
-      });
-    })
-    .then(function () {
-      res.json({
-        general: general,
-        voice: {
-          client: vclients,
-          server: vservers
-        }
-      });
-    })
-    .catch(function (err) {
-      console.log(err);
+
+  try {
+    const whazzup = await axios.get(`${config.general.baseurl}/status`);
+
+    whazzup.forEach(function (d) {
+      if (d.name === "url1") tmp.push(d.value);
     });
+
+    const data = await axios.get(tmp[0]);
+
+    var lines = data.split("\n");
+    var mode = "";
+    lines.forEach(function (line) {
+      line = line.replace(/(\r\n|\n|\r)/gm, "");
+      if (line.startsWith("!")) {
+        mode = line.slice(1);
+      } else {
+        switch (mode) {
+          case "GENERAL": // !GENERAL
+            var extract = line.split(" = ");
+            general.push({
+              name: extract[0],
+              value: extract[1]
+            });
+            break;
+          case "VOICE CLIENTS": // !CLIENTS
+            var fields = line.split(":");
+            break;
+          case "VOICE SERVERS": // !AIRPORTS
+            var fields = line.split(":");
+            var vserver = {};
+            vserver.ident = fields[2];
+            vserver.ip = fields[0];
+            vserver.location = fields[1];
+            vserver.description = fields[5];
+            vserver.isallowed = fields[4];
+            vserver.maxconnection = fields[5];
+            vservers.push(vserver);
+            break;
+        }
+      }
+
+      res.status(200).send({
+        status: 'success',
+        code: 201,
+        response: {
+          message: 'data obtained',
+          data: {
+            general: general,
+            voice: {
+              client: vclients,
+              server: vservers
+            }
+          },
+        },
+      })
+    });
+
+
+  } catch (err) {
+    res.status(400).send({
+      status: 'failure',
+      code: 401,
+      response: {
+        message: 'unexpected error',
+        data: err.data,
+      },
+    })
+  }
 });
 
 app.get("/metar", function (req, res) {
