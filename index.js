@@ -1,7 +1,7 @@
 // IVAO WHAZZUP DOC https://doc.ivao.aero/apidocumentation:whazzup
 
+const axios = require("axios");
 const express = require("express");
-const rp = require("request-promise");
 const app = express();
 const dotenv = require('dotenv')
 
@@ -23,36 +23,46 @@ app.get("/", function (req, res) {
   });
 });
 
-app.get("/status", function (req, res) {
+app.get("/status", async function (req, res) {
   var output = [];
-  rp({
-      method: "GET",
-      uri: config.general.whazzupurl
+
+  try {
+    const whazzup = await axios.get(config.general.whazzupurl);
+
+    whazzup
+      .split('\n')
+      .filter(function (l) {
+        return !l.startsWith(";") && !l.startsWith(";") && l !== ""; // Any line starting with ; or # should be regarded as comments and ignored by the client parser
+      })
+      .forEach(function (l) {
+        // console.log(l)
+        var extract = l.split("=");
+        if (extract[1]) {
+          output.push({
+            name: extract[0],
+            value: extract[1].replace(/(\r\n|\n|\r)/gm, "") // Trim the end
+          });
+        }
+      });
+
+    res.status(200).send({
+      status: 'success',
+      code: 201,
+      response: {
+        message: 'data obtained',
+        data: output,
+      },
     })
-    .then(function (data) {
-      data
-        .split("\n") // Seperate by detecting new line character
-        .filter(function (l) {
-          return !l.startsWith(";") && !l.startsWith(";") && l !== ""; // Any line starting with ; or # should be regarded as comments and ignored by the client parser
-        })
-        .forEach(function (l) {
-          // console.log(l)
-          var extract = l.split("=");
-          if (extract[1]) {
-            output.push({
-              name: extract[0],
-              value: extract[1].replace(/(\r\n|\n|\r)/gm, "") // Trim the end
-            });
-          }
-        });
-      return;
+  } catch (err) {
+    res.status(400).send({
+      status: 'failure',
+      code: 401,
+      response: {
+        message: 'unexpected error',
+        data: err.data,
+      },
     })
-    .then(function () {
-      res.json(output);
-    })
-    .catch(function (err) {
-      console.log(err);
-    });
+  }
 });
 
 app.get("/whazzup", function (req, res) {
@@ -61,6 +71,8 @@ app.get("/whazzup", function (req, res) {
     airports = [],
     servers = [];
   var tmp = [];
+
+  
   rp({
       method: "GET",
       uri: config.general.baseurl + "/status",
