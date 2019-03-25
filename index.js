@@ -18,9 +18,13 @@ const config = {
 };
 
 app.get("/", function (req, res) {
-  res.json({
-    response: "OK"
-  });
+  res.status(200).send({
+    status: 'success',
+    code: 201,
+    response: {
+      message: 'hello',
+    },
+  })
 });
 
 app.get("/status", async function (req, res) {
