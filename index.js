@@ -60,7 +60,7 @@ app.get("/status", async function (req, res) {
   } catch (err) {
     res.status(400).send({
       status: 'failure',
-      code: 401,
+      code: 701,
       response: {
         message: 'unexpected error',
         data: err.data,
@@ -194,7 +194,7 @@ app.get("/whazzup", async function (req, res) {
   } catch (err) {
     res.status(400).send({
       status: 'failure',
-      code: 401,
+      code: 701,
       response: {
         message: 'unexpected error',
         data: err.data,
@@ -270,7 +270,7 @@ app.get("/voice", function (req, res) {
   } catch (err) {
     res.status(400).send({
       status: 'failure',
-      code: 401,
+      code: 701,
       response: {
         message: 'unexpected error',
         data: err.data,
@@ -319,7 +319,7 @@ app.get("/metar", function (req, res) {
   } catch (err) {
     res.status(400).send({
       status: 'failure',
-      code: 401,
+      code: 701,
       response: {
         message: 'unexpected error',
         data: err.data,
@@ -370,7 +370,7 @@ app.get("/taf", function (req, res) {
   } catch (err) {
     res.status(400).send({
       status: 'failure',
-      code: 401,
+      code: 701,
       response: {
         message: 'unexpected error',
         data: err.data,
@@ -382,51 +382,60 @@ app.get("/taf", function (req, res) {
 app.get("/shorttaf", function (req, res) {
   var output = [];
   var tmp = [];
-  rp({
-      method: "GET",
-      uri: config.general.baseurl + "/status",
-      json: true
-    })
-    .then(function (data) {
-      data.forEach(function (d) {
-        if (d.name === "shorttaf0") tmp.push(d.value);
-      });
-    })
-    .then(function () {
-      return rp({
-        method: "GET",
-        uri: tmp[0]
-      }).then(function (data) {
-        lines = data.split("\n");
-        lines.forEach(function (line) {
-          var shorttaf = {};
-          line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
-          shorttaf.icao = line[0];
-          shorttaf.time = line[1];
-          shorttaf.detail = "";
-          for (var i = 2; i < line.length; i++) {
-            shorttaf.detail += line[i];
-            if (line.length - 1 !== i) {
-              shorttaf.detail += " ";
-            }
-          }
-          output.push(shorttaf);
-        });
-      });
-    })
-    .then(function () {
-      res.json(output);
-    })
-    .catch(function (err) {
-      console.log(err);
+
+  try {
+    const whazzup = await axios.get(`${config.general.baseurl}/status`);
+
+    whazzup.forEach(function (d) {
+      if (d.name === "shorttaf0") tmp.push(d.value);
     });
+
+    const data = await axios.get(tmp[0]);
+
+    var lines = data.split("\n");
+    lines.forEach(function (line) {
+      var shorttaf = {};
+      line = line.replace(/(\r\n|\n|\r)/gm, "").split(" ");
+      shorttaf.icao = line[0];
+      shorttaf.time = line[1];
+      shorttaf.detail = "";
+      for (var i = 2; i < line.length; i++) {
+        shorttaf.detail += line[i];
+        if (line.length - 1 !== i) {
+          shorttaf.detail += " ";
+        }
+      }
+      output.push(shorttaf);
+    });
+
+    res.status(200).send({
+      status: 'success',
+      code: 201,
+      response: {
+        message: 'data obtained',
+        data: output,
+      },
+    })
+  } catch (err) {
+    res.status(400).send({
+      status: 'failure',
+      code: 701,
+      response: {
+        message: 'unexpected error',
+        data: err.data,
+      },
+    })
+  }
 });
 
-app.get('*', function (req, res) {
-  res.json({
-    respose: "error",
-    remark: "not found"
-  }, 404);
+app.all('*', function (req, res) {
+  res.status(404).send({
+    status: 'failure',
+    code: 704,
+    response: {
+      message: 'route not found :P',
+    },
+  })
 });
 
 app.listen(config.web.port);
