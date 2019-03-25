@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/rayriffy/ivaowhazzup-to-json#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.3",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.2"
+    "request": "^2.88.0"
   }
 }
