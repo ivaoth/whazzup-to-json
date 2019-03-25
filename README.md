@@ -57,9 +57,9 @@ Routes
 ------
 
 | Method | URI                                                          | Description                |
-|--------|--------------------------------------------------------------|----------------------------|
-| GET    | [/status](https://whazzup.rayriffy.com/status)     | Show whazzup status file   |
-| GET    | [/whazzup](https://whazzup.rayriffy.com/whazzup)   | Show IVAO traffic and ATCs |
-| GET    | [/metar](https://whazzup.rayriffy.com/metar)       | Show METAR information     |
-| GET    | [/taf](https://whazzup.rayriffy.com/taf)           | Show TAF information       |
-| GET    | [/shorttaf](https://whazzup.rayriffy.com/shorttaf) | Show short TAF information |
+| ------ | ------------------------------------------------------------ | -------------------------- |
+| GET    | [/status](https://whazzup.th.ivao.aero/status)               | Show whazzup status file   |
+| GET    | [/whazzup](https://whazzup.th.ivao.aero/whazzup)             | Show IVAO traffic and ATCs |
+| GET    | [/metar](https://whazzup.th.ivao.aero/metar)                 | Show METAR information     |
+| GET    | [/taf](https://whazzup.th.ivao.aero/taf)                     | Show TAF information       |
+| GET    | [/shorttaf](https://whazzup.th.ivao.aero/shorttaf)           | Show short TAF information |
